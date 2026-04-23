@@ -1,0 +1,4 @@
+/**:
+    ros__parameters:
+        pos_tracking:
+            base_frame: 'base_link'  # Use base_link instead of zed_camera_link for odometry

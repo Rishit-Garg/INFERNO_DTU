@@ -1,0 +1,943 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot
+  name="drive">
+
+  <link name="dummy_link" />
+  <joint name="dummy_joint" type="fixed">
+    <parent link="dummy_link"/>
+    <child link="base_link"/>
+  </joint>
+
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="-0.00633939315398788 0.0616933491123311 0.000102079258242889"
+        rpy="0 0 0" />
+      <mass
+        value="12.6951056650873" />
+      <inertia
+        ixx="0.261385831219974"
+        ixy="0.00262186748821054"
+        ixz="1.30796658267419E-16"
+        iyy="0.843984730617937"
+        iyz="-7.51563399887942E-17"
+        izz="0.664911927857951" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://drive/meshes/base.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://drive/meshes/base.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+<!-- IMU Sensor -->
+  <link name="imu_link">
+    <inertial>
+      <mass value="0.01"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-5" ixy="0.0" ixz="0.0" iyy="1e-5" iyz="0.0" izz="1e-5"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="imu_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="imu_link"/>
+    <origin xyz="0 0 0.1" rpy="0 0 0"/>
+  </joint>
+  <gazebo reference="imu_link">
+    <sensor name="imu_sensor" type="imu">
+      <pose>0 0 0 0 0 0</pose>
+      <update_rate>50</update_rate>
+      <always_on>true</always_on>
+      <visualize>true</visualize>
+      <topic>/imu/data</topic>
+      <imu>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.0002</stddev>
+        </noise>
+      </imu>
+      <plugin filename="libignition-gazebo-imu-system.so"
+        name="ignition::gazebo::systems::Imu">
+        <topic>/imu</topic>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+<!-- LiDAR Sensor -->
+<link name="lidar_link">
+    <inertial>
+      <mass value="0.01"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-5" ixy="0.0" ixz="0.0" iyy="1e-5" iyz="0.0" izz="1e-5"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <cylinder radius="0.03" length="0.02"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.03" length="0.02"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="lidar_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="lidar_link"/>
+    <origin xyz="0 0 0.2" rpy="0 0 0"/>
+  </joint>
+  <gazebo reference="lidar_link">
+    <sensor name='lidar' type='gpu_lidar'>
+      <pose>0 0 0 0 0 0</pose>
+      <topic>/lidar</topic>
+      <update_rate>10</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>640</samples>
+            <resolution>1</resolution>
+            <min_angle>-1.396263</min_angle>
+            <max_angle>1.396263</max_angle>
+          </horizontal>
+          <vertical>
+            <samples>1</samples>
+            <resolution>0.01</resolution>
+            <min_angle>0</min_angle>
+            <max_angle>0</max_angle>
+          </vertical>
+        </scan>
+        <range>
+          <min>0.08</min>
+          <max>10.0</max>
+          <resolution>0.01</resolution>
+        </range>
+      </ray>
+      <always_on>1</always_on>
+      <visualize>true</visualize>
+    </sensor>
+  </gazebo>
+
+<!-- Wheel and Suspension Joints -->
+
+  <link
+    name="rotate_1">
+    <inertial>
+      <origin
+        xyz="0.0129852901860572 -3.33066907387547E-16 0.0662521834916939"
+        rpy="0 0 0" />
+      <mass
+        value="0.245029467362339" />
+      <inertia
+        ixx="0.000481938208354005"
+        ixy="6.09863722023096E-20"
+        ixz="2.30185129071682E-05"
+        iyy="0.000539038649100082"
+        iyz="2.21738135307142E-18"
+        izz="0.000142438687060036" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://drive/meshes/rotate_1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://drive/meshes/rotate_1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_rotate_1"
+    type="continuous">
+    <origin
+      xyz="-0.52014 -0.27 -0.28767"
+      rpy="3.1416 0 1.4079" />
+    <parent
+      link="base_link" />
+    <child
+      link="rotate_1" />
+    <axis
+      xyz="0 0 1" />
+    <dynamics damping="0.5" />
+  </joint>
+  <link
+    name="wheel_1">
+    <inertial>
+      <origin
+        xyz="1.66533453693773E-16 -0.022500000000005 -2.27595720048157E-15"
+        rpy="0 0 0" />
+      <mass
+        value="0.969966731795849" />
+      <inertia
+        ixx="0.00180858380199434"
+        ixy="2.43945488809238E-19"
+        ixz="-8.30092288309214E-20"
+        iyy="0.00321301479907375"
+        iyz="-5.2583805365547E-18"
+        izz="0.00180858380199434" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://drive/meshes/wheel_1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://drive/meshes/wheel_1.STL" />
+      </geometry>
+      <surface>
+    <friction>
+      <ode>
+        <mu>1.0</mu>               <!-- Static friction -->
+        <mu2>1.0</mu2>             <!-- Torsional friction -->
+      </ode>
+    </friction>
+  </surface>
+    </collision>
+  </link>
+  <joint
+    name="joint_wheel_1"
+    type="continuous">
+    <origin
+      xyz="0 0 0.1125"
+      rpy="3.1416 1.3751 1.5708" />
+    <parent
+      link="rotate_1" />
+    <child
+      link="wheel_1" />
+    <axis
+      xyz="0 1 0" />
+  </joint>
+  <link
+    name="rotate_2">
+    <inertial>
+      <origin
+        xyz="0.0129852901860573 -2.77555756156289E-17 0.0662521834916938"
+        rpy="0 0 0" />
+      <mass
+        value="0.245029467362339" />
+      <inertia
+        ixx="0.000481938208354005"
+        ixy="1.73993035967218E-20"
+        ixz="2.30185129071684E-05"
+        iyy="0.000539038649100083"
+        iyz="6.1814902161024E-20"
+        izz="0.000142438687060036" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://drive/meshes/rotate_2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://drive/meshes/rotate_2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_rotate_2"
+    type="continuous">
+    <origin
+      xyz="0.042287 -0.27 -0.28767"
+      rpy="3.1416 0 1.5708" />
+    <parent
+      link="base_link" />
+    <child
+      link="rotate_2" />
+    <axis
+      xyz="0 0 1" />
+    <dynamics damping="0.5" />
+  </joint>
+  <link
+    name="wheel_2">
+    <inertial>
+      <origin
+        xyz="6.10622663543836E-16 -0.0224999999999977 2.33146835171283E-15"
+        rpy="0 0 0" />
+      <mass
+        value="0.969966731795848" />
+      <inertia
+        ixx="0.00180858380199434"
+        ixy="8.12367448979842E-20"
+        ixz="5.42101086242752E-20"
+        iyy="0.00321301479907375"
+        iyz="-3.89466907254394E-21"
+        izz="0.00180858380199434" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://drive/meshes/wheel_2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://drive/meshes/wheel_2.STL" />
+      </geometry>
+      <surface>
+    <friction>
+      <ode>
+        <mu>1.0</mu>               <!-- Static friction -->
+        <mu2>1.0</mu2>             <!-- Torsional friction -->
+      </ode>
+    </friction>
+  </surface>
+    </collision>
+  </link>
+  <joint
+    name="joint_wheel_2"
+    type="continuous">
+    <origin
+      xyz="0 0 0.1125"
+      rpy="0 0.1965 -1.5708" />
+    <parent
+      link="rotate_2" />
+    <child
+      link="wheel_2" />
+    <axis
+      xyz="0 1 0" />
+  </joint>
+  <link
+    name="rotate_3">
+    <inertial>
+      <origin
+        xyz="0.0129852911708224 0 0.0661603898916331"
+        rpy="0 0 0" />
+      <mass
+        value="0.245029467362339" />
+      <inertia
+        ixx="0.000481938209039244"
+        ixy="-1.27054956729403E-20"
+        ixz="2.30185078538831E-05"
+        iyy="0.000539038649100082"
+        iyz="-1.96935160142067E-19"
+        izz="0.000142438686374797" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://drive/meshes/rotate_3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://drive/meshes/rotate_3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_rotate_3"
+    type="continuous">
+    <origin
+      xyz="0.47299 -0.225 -0.30799"
+      rpy="3.1158 0 1.5708" />
+    <parent
+      link="base_link" />
+    <child
+      link="rotate_3" />
+    <axis
+      xyz="0 0 1" />
+    <dynamics damping="0.5" />
+  </joint>
+  <link
+    name="wheel_3">
+    <inertial>
+      <origin
+        xyz="-1.55431223447522E-15 0.0224999999999991 1.55431223447522E-15"
+        rpy="0 0 0" />
+      <mass
+        value="0.969966731795848" />
+      <inertia
+        ixx="0.00180858380199434"
+        ixy="-2.26611196637238E-19"
+        ixz="0"
+        iyy="0.00321301479907375"
+        iyz="-1.86470415833723E-19"
+        izz="0.00180858380199434" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://drive/meshes/wheel_3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://drive/meshes/wheel_3.STL" />
+      </geometry>
+      <surface>
+    <friction>
+      <ode>
+        <mu>1.0</mu>               <!-- Static friction -->
+        <mu2>1.0</mu2>             <!-- Torsional friction -->
+      </ode>
+    </friction>
+  </surface>
+    </collision>
+  </link>
+  <joint
+    name="joint_wheel_3"
+    type="continuous">
+    <origin
+      xyz="0 0 0.11241"
+      rpy="0 0.67825 1.5708" />
+    <parent
+      link="rotate_3" />
+    <child
+      link="wheel_3" />
+    <axis
+      xyz="0 1 0" />
+  </joint>
+  <link
+    name="rotate_4">
+    <inertial>
+      <origin
+        xyz="0.0129852901860573 0 0.066252183491694"
+        rpy="0 0 0" />
+      <mass
+        value="0.245029467362338" />
+      <inertia
+        ixx="0.000481938208354005"
+        ixy="-2.55972847915331E-20"
+        ixz="2.30185129071678E-05"
+        iyy="0.000539038649100082"
+        iyz="1.97509895186831E-20"
+        izz="0.000142438687060036" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://drive/meshes/rotate_4.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://drive/meshes/rotate_4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_rotate_4"
+    type="continuous">
+    <origin
+      xyz="-0.51862 0.27 -0.29051"
+      rpy="3.1416 0 -1.5708" />
+    <parent
+      link="base_link" />
+    <child
+      link="rotate_4" />
+    <axis
+      xyz="0 0 1" />
+    <dynamics damping="0.5" />
+  </joint>
+  <link
+    name="wheel_4">
+    <inertial>
+      <origin
+        xyz="-4.44089209850063E-15 -0.0225000000000017 1.33226762955019E-15"
+        rpy="0 0 0" />
+      <mass
+        value="0.969966731795849" />
+      <inertia
+        ixx="0.00180858380199434"
+        ixy="-4.14417867789944E-19"
+        ixz="1.62630325872826E-19"
+        iyy="0.00321301479907375"
+        iyz="-4.97621623879598E-20"
+        izz="0.00180858380199434" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://drive/meshes/wheel_4.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://drive/meshes/wheel_4.STL" />
+      </geometry>
+      <surface>
+    <friction>
+      <ode>
+        <mu>1.0</mu>               <!-- Static friction -->
+        <mu2>1.0</mu2>             <!-- Torsional friction -->
+      </ode>
+    </friction>
+  </surface>
+    </collision>
+  </link>
+  <joint
+    name="joint_wheel_4"
+    type="continuous">
+    <origin
+      xyz="0 0 0.1125"
+      rpy="0 0.6986 -1.5708" />
+    <parent
+      link="rotate_4" />
+    <child
+      link="wheel_4" />
+    <axis
+      xyz="0 1 0" />
+  </joint>
+  <link
+    name="rotate_5">
+    <inertial>
+      <origin
+        xyz="0.0129852891007726 0.0414537955768247 0.0516810862683573"
+        rpy="0 0 0" />
+      <mass
+        value="0.245029467362338" />
+      <inertia
+        ixx="0.000481938207599867"
+        ixy="1.44026196203906E-05"
+        ixz="1.79559667118559E-05"
+        iyy="0.000383771035147503"
+        iyz="-0.000193574527611515"
+        izz="0.000297706301766753" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://drive/meshes/rotate_5.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://drive/meshes/rotate_5.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_rotate_5"
+    type="continuous">
+    <origin
+      xyz="0.0438 0.27 -0.29051"
+      rpy="-2.4656 0 -1.5708" />
+    <parent
+      link="base_link" />
+    <child
+      link="rotate_5" />
+    <axis
+      xyz="0 0.6257 0.78007" />
+    <dynamics damping="0.5" />
+  </joint>
+  <link
+    name="wheel_5">
+    <inertial>
+      <origin
+        xyz="-1.36002320516582E-15 -0.0224999999999973 3.10862446895044E-15"
+        rpy="0 0 0" />
+      <mass
+        value="0.969966731795849" />
+      <inertia
+        ixx="0.00180858380199434"
+        ixy="-5.99349909370434E-20"
+        ixz="-2.71050543121376E-19"
+        iyy="0.00321301479907375"
+        iyz="-2.00709648585059E-20"
+        izz="0.00180858380199434" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://drive/meshes/wheel_5.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://drive/meshes/wheel_5.STL" />
+      </geometry>
+      <surface>
+    <friction>
+      <ode>
+        <mu>1.0</mu>               <!-- Static friction -->
+        <mu2>1.0</mu2>             <!-- Torsional friction -->
+      </ode>
+    </friction>
+  </surface>
+    </collision>
+  </link>
+  <joint
+    name="joint_wheel_5"
+    type="continuous">
+    <origin
+      xyz="0 0.070391 0.087757"
+      rpy="0 0.025369 -1.5708" />
+    <parent
+      link="rotate_5" />
+    <child
+      link="wheel_5" />
+    <axis
+      xyz="0 1 0" />
+  </joint>
+  <link
+    name="rotate_6">
+    <inertial>
+      <origin
+        xyz="0.0129852901860573 -0.00495697071227941 0.0658721019855867"
+        rpy="0 0 0" />
+      <mass
+        value="0.245029467362338" />
+      <inertia
+        ixx="0.000481938208354005"
+        ixy="-1.72729257204923E-06"
+        ixz="2.2953614025421E-05"
+        iyy="0.000536805437098067"
+        iyz="2.96766669183116E-05"
+        izz="0.000144671899062051" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://drive/meshes/rotate_6.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://drive/meshes/rotate_6.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_rotate_6"
+    type="continuous">
+    <origin
+      xyz="0.47715 0.225 -0.30253"
+      rpy="3.104 0 -1.5708" />
+    <parent
+      link="base_link" />
+    <child
+      link="rotate_6" />
+    <axis
+      xyz="0 0.075039 -0.99718" />
+    <dynamics damping="0.5" />
+  </joint>
+  <link
+    name="wheel_6">
+    <inertial>
+      <origin
+        xyz="3.33066907387547E-16 0.0225000000000001 -4.44089209850063E-16"
+        rpy="0 0 0" />
+      <mass
+        value="0.969966731795848" />
+      <inertia
+        ixx="0.00180858380199434"
+        ixy="3.0705280164728E-22"
+        ixz="0"
+        iyy="0.00321301479907375"
+        iyz="7.62956439962978E-21"
+        izz="0.00180858380199434" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://drive/meshes/wheel_6.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://drive/meshes/wheel_6.STL" />
+      </geometry>
+      <surface>
+    <friction>
+      <ode>
+        <mu>1.0</mu>               <!-- Static friction -->
+        <mu2>1.0</mu2>             <!-- Torsional friction -->
+      </ode>
+    </friction>
+  </surface>
+    </collision>
+  </link>
+  <joint
+    name="joint_wheel_6"
+    type="continuous">
+    <origin
+      xyz="0 -0.0084274 0.11199"
+      rpy="3.1416 -0.69655 -1.5708" />
+    <parent
+      link="rotate_6" />
+    <child
+      link="wheel_6" />
+    <axis
+      xyz="0 1 0" />
+  </joint>
+  
+  <!-- ROS2 Control -->
+  <ros2_control name="rover_system" type="system">
+    <hardware>
+      <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+    </hardware>
+    
+    <!-- Wheel Joints -->
+    <joint name="joint_wheel_1">
+      <command_interface name="velocity"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="joint_wheel_2">
+      <command_interface name="velocity"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="joint_wheel_3">
+      <command_interface name="velocity"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="joint_wheel_4">
+      <command_interface name="velocity"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="joint_wheel_5">
+      <command_interface name="velocity"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="joint_wheel_6">
+      <command_interface name="velocity"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    
+    <!-- Steering Joints -->
+    <joint name="joint_rotate_1">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="joint_rotate_2">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="joint_rotate_3">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="joint_rotate_4">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="joint_rotate_5">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="joint_rotate_6">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+  </ros2_control>
+
+  <!-- Gazebo plugins -->
+  <gazebo>
+    <!-- ROS2 Control Plugin -->
+    <plugin filename="libgz_ros2_control-system.so" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+      <parameters>/home/kush/nav2_ws/src/drive/models/drive/config/rover_controllers.yaml</parameters>
+      <ros>
+        <namespace>/</namespace>
+      </ros>
+    </plugin>
+
+    <!-- Joint State Publisher -->
+    <plugin
+      filename="libignition-gazebo-joint-state-publisher-system.so"
+      name="ignition::gazebo::systems::JointStatePublisher">
+      <joint_name>joint_wheel_1</joint_name>
+      <joint_name>joint_wheel_2</joint_name>
+      <joint_name>joint_wheel_3</joint_name>
+      <joint_name>joint_wheel_4</joint_name>
+      <joint_name>joint_wheel_5</joint_name>
+      <joint_name>joint_wheel_6</joint_name>
+      <joint_name>joint_rotate_1</joint_name>
+      <joint_name>joint_rotate_2</joint_name>
+      <joint_name>joint_rotate_3</joint_name>
+      <joint_name>joint_rotate_4</joint_name>
+      <joint_name>joint_rotate_5</joint_name>
+      <joint_name>joint_rotate_6</joint_name>
+    </plugin>
+  </gazebo>
+
+</robot>

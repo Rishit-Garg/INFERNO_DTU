@@ -1,0 +1,109 @@
+# rtabmap_params.yaml - ZED2i Configuration (Fixed namespace)
+/**:
+  ros__parameters:
+    # Basic input topics (verified with ros2 topic list)
+    rgb_topic: "/zed/zed_node/rgb/color/rect/image"
+    depth_topic: "/zed/zed_node/depth/depth_registered"
+    camera_info_topic: "/zed/zed_node/rgb/color/rect/camera_info"
+    imu_topic: "/zed/zed_node/imu/data"
+    odom_topic: "/zed/zed_node/odom"
+
+
+    
+    # Frames
+    frame_id: "base_link"
+    odom_frame_id: "odom"
+    map_frame_id: "map"
+    
+    # TF publishing
+    publish_tf: true
+    wait_for_transform: 1.0
+    
+    # Synchronization
+    approx_sync: true
+    approx_sync_max_interval: 0.2
+    
+    # Subscribe settings
+    subscribe_rgb: true
+    subscribe_depth: true
+    subscribe_scan: false
+    subscribe_odom: true
+    subscribe_imu: true
+    wait_imu_to_init: true
+    
+    # Use visual odometry from RTAB-Map (set to false to use external odom)
+    odom_sensor_sync: true
+    
+    # Queue sizes (increase if sync issues)
+    topic_queue_size: 100
+    sync_queue_size: 100
+    
+    # Database / startup
+    rtabmap_args: "--delete_db_on_start"
+    database_path: "/home/manik/nav2_ws/src/rtabmap.db"
+    
+    # Visual features (optimized for ZED2i)
+    Vis/MaxFeatures: "2000"
+    Vis/MinInliers: "15"
+    Vis/CorType: "0"
+    
+    # Visual Odometry
+    Odom/Strategy: "0"
+    Odom/GuessMotion: "true"
+    Odom/MaxAcceptedDistance: "0.15"
+    Odom/ResetCountdown: "0"
+    
+    # RGB-D parameters
+    RGBD/Enabled: "true"
+    RGBD/LinearUpdate: "0.1"
+    RGBD/AngularUpdate: "0.1"
+    RGBD/MaxDepth: "10.0"
+    RGBD/OptimizeFromGraphEnd: "false"
+    RGBD/ProximityBySpace: "true"
+    RGBD/ProximityPathMaxNeighbors: "10"
+    
+    # Memory management
+    Mem/IncrementalMemory: "true"
+    Mem/InitWMWithAllNodes: "false"
+    Mem/NotLinkedNodesKept: "true"
+    Mem/STMSize: "30"
+    
+    # IMU settings (ZED2i specific)
+    Imu/FilterMadgwick: "false"
+    Imu/OmitGravityOnOutput: "true"
+    
+    # Loop closure
+    Kp/DetectorStrategy: "6"
+    Kp/MaxFeatures: "400"
+    
+    # 2D occupancy grid for navigation
+    Grid/FromDepth: "true"
+    Grid/FromStereo: "false"
+    Grid/RangeMin: "0.2"
+    Grid/RangeMax: "10.0"
+    Grid/CellSize: "0.05"
+    Grid/MaxObstacleHeight: "2.0"
+    Grid/MaxGroundHeight: "0.0"
+    Grid/NoiseFilteringRadius: "0.0"
+    Grid/NoiseFilteringMinNeighbors: "5"
+    
+    # Visualization
+    gui: false
+    
+    # Map publishing (force real-time updates)
+    map_always_update: true
+    map_empty_ray_tracing: true
+    cloud_output_voxelized: true
+    
+    # Grid map publishing
+    Grid/3D: "false"
+    Grid/RayTracing: "true"
+    
+    # Performance
+    detection_rate: 1.0
+    Rtabmap/DetectionRate: "1.0"
+    
+    # Graph optimization
+    Optimizer/Strategy: "0"
+    Optimizer/Iterations: "100"
+    Reg/Strategy: "0"
